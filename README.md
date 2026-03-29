@@ -1,40 +1,214 @@
 # ai-tic-tac-toe-lab
 
-The full details for the lab are available on the Axian Wiki [AI Project Exercise](https://axianinc.atlassian.net/wiki/spaces/AXLND/pages/3482976257/AI+Project+Exercise) page.
+## Project Ground Rules
 
-To start the lab follow the Dev Container Setup Instructions in the README.md of the 00-devcontainer-starter branch
+Project operating rules, intent, and the running action log live in [`docs/`](./docs/README.md).
 
-## Example/Starter Branches
-This repository contains multiple branches that serve as examples or starters for different AI Agent usage patterns. Each branch is designed to demonstrate specific functionalities or use cases of AI Agents.
+Before making changes:
 
-- `00-devcontainer-starter`: A starter branch that includes a development container setup for easy environment configuration.
-- `01-agents-md-with-context-management`: An example branch that showcases how to use AI Agents with context management through markdown files.
-- `02-agents-md-with-extended-context-management`: An advanced example branch that extends the context management capabilities demonstrated in the previous branch. (May or may not be better)
-- `03-codex-custom-prompts`: An example branch that illustrates the use of custom prompts for Codex (feel free to add more examples prompts)
+1. Review [`docs/working-agreement.md`](./docs/working-agreement.md).
+2. Confirm the current target state in [`docs/project-intent.md`](./docs/project-intent.md).
+3. Plan the work before executing it.
+4. Update documentation as changes land.
 
-## Codex CLI
+## Current Status
 
-This lab is focused on using Codex CLI, which is an open-source command-line interface for interacting with OpenAI's Codex models. Codex CLI allows users to leverage the power of Codex for various tasks, such as code generation, code completion, and more.
+The repository now contains a Tic Tac Toe React application in TypeScript with:
 
-However, the AI Agent functionality demonstrated in this lab can also be applied using other tools like ClaudeCode, Gemini CLI, or LangChain. The principles and techniques covered in this lab are generally applicable across different AI Agent platforms.
+- a dedicated local game domain module for deterministic CPU play
+- a multiplayer HTTP + WebSocket API server
+- move history and replayable multiplayer state
+- landing, local game, and live multiplayer views
+- an active-game spectator lobby with real-time viewing
+- win/loss/move sound effects
+- confetti on player wins
+- command-line unit, server, and Playwright test coverage
+- PR validation through GitHub Actions with test coverage and build packaging
+- GitHub Actions validation on PRs and `main` pushes with test coverage and build packaging
 
-[Codex CLI Overview](https://developers.openai.com/codex/cli)  
+The application is currently deployed at `https://d3e68a1unw9npz.cloudfront.net`.
 
-Basic Codex CLI areas to understand for this lab:
-- [Prompting](https://developers.openai.com/codex/prompting)
-- [AGENTS.md](https://developers.openai.com/codex/guides/agents-md)
-- [Custom Prompts](https://developers.openai.com/codex/custom-prompts)
+## Local Development
 
-Advanced Codex CLI areas not currently covered in this lab but useful for more complex scenarios:
-- [Rules](https://developers.openai.com/codex/rules)
-- [MCP Servers](https://developers.openai.com/codex/mcp)
-- [Skills](https://developers.openai.com/codex/skills)
+Install dependencies:
 
+```bash
+npm install
+```
 
+Start the client only:
 
-## Thoughts on the README.md
-When working with AI Agents, the README.md file serves as a crucial guide for users to understand the purpose, setup, and usage of the project.  The Agent will generally read the README.md to gather context about the project, even if not specifically given instructions to do so. Therefore, it is important to ensure that the README.md is clear, concise, and informative.
+```bash
+npm run dev
+```
 
-Each example branch has a README.md that is tailored to the specific example being demonstrated. This allows users to quickly grasp the unique aspects of each example without confusion. However, the example branch README.md files may not be valid for the actual project goals and will most likely confuse the Agent about your actual intent.
+Start the multiplayer API only:
 
-It is recommended that if you clone an example branch to use as the base for your own project, you should update the README.md file to accurately reflect the goals and context of your specific project. This will help ensure that the AI Agent has the correct information to work with and can perform its tasks effectively.  Or even just remove the README.md file entirely and let the Agent generate a new one based on your specific project needs.
+```bash
+npm run dev:server
+```
+
+Start client and API together:
+
+```bash
+npm run dev:multiplayer
+```
+
+Create a production build:
+
+```bash
+npm run build
+```
+
+## Test Commands
+
+Run linting:
+
+```bash
+npm run lint
+```
+
+Run unit tests:
+
+```bash
+npm run test:unit
+```
+
+Run multiplayer server tests:
+
+```bash
+npm run test:server
+```
+
+Generate coverage reports for the client and server test suites:
+
+```bash
+npm run coverage
+```
+
+Install the Playwright browser dependency:
+
+```bash
+npm run test:e2e:install
+```
+
+Run the end-to-end browser test:
+
+```bash
+npm run test:e2e
+```
+
+## AWS Deployment
+
+Deployment documentation lives in [`docs/deployment.md`](./docs/deployment.md).
+
+The current IaC path uses AWS CDK in TypeScript under [`infra/`](./infra), targeting:
+
+- private S3 origin storage
+- CloudFront distribution
+- DynamoDB for multiplayer game storage
+- a low-cost EC2 API host behind CloudFront
+- SPA fallback routing back to `index.html`
+
+Current deployed URL:
+
+- `https://d3e68a1unw9npz.cloudfront.net`
+- API health: `https://d3e68a1unw9npz.cloudfront.net/health`
+
+## Implemented Game Flow
+
+- The landing page starts a new game against the CPU.
+- The landing page can also create, join, or spectate multiplayer games.
+- The game detail page shows turn state, winner state, move history, and legal move feedback.
+- Illegal moves are blocked in the UI.
+- A completed game allows rematch or quit.
+- The deterministic CPU always takes the first available cell.
+- Multiplayer games are validated by the server before moves are accepted.
+- Multiplayer updates are delivered live over WebSockets to players and spectators.
+- Active multiplayer games can be listed and opened in spectator mode.
+- Multiplayer games can be resigned.
+- Abandoned multiplayer games can be ended after 3 minutes via server-side abandonment checks.
+
+## Dev Container Setup Instructions
+
+### Pre-Requisites
+
+This lab takes place inside a Docker-based Dev Container, so the host machine only needs the core local tooling.
+
+- Docker Desktop
+- VS Code with the Dev Containers extension
+- Local install of OpenAI Codex CLI
+- Axian GitHub account access
+- Axian AWS L&D access key
+
+Example local Codex install:
+
+```bash
+brew install codex
+```
+
+or:
+
+```bash
+npm install -g @openai/codex
+```
+
+### Prep
+
+- Generate or obtain your Axian AWS L&D access key.
+- Run `codex` locally and complete the sign-in flow.
+
+### Clone and Create Personal Branch
+
+```bash
+git clone https://github.com/Axian-Inc/ai-tic-tac-toe-lab.git
+git checkout 00-devcontainer-starter
+git checkout -b <firstname-last initial>-<branch-name>
+```
+
+### Open in Dev Container
+
+- Open the repository in VS Code.
+- Reopen in Dev Container when prompted.
+- Wait for the build to complete.
+- The build runs `copy-codex-auth.sh` to copy local Codex auth into the container.
+
+### Verify Codex Auth Copied
+
+- Open a terminal in the Dev Container.
+- Run `codex` and verify you are already logged in.
+- Run `/status` if needed to confirm account information.
+
+### AWS Setup
+
+Run:
+
+```bash
+aws configure
+```
+
+Use:
+
+- region: `us-west-2`
+- output: `json` or blank
+
+Verify with:
+
+```bash
+aws s3 ls
+```
+
+### GitHub Setup
+
+Verify repository access:
+
+```bash
+git ls-remote origin
+```
+
+Set Git identity:
+
+```bash
+git config --global user.email "you@example.com"
+git config --global user.name "Your Name"
+```

@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Install server dependencies
+        run: npm --prefix server ci
+
+      - name: Run coverage
+        run: npm run coverage
+
+      - name: Build application packages
+        run: npm run build
+
+      - name: Upload client coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: client-coverage
+          path: coverage
+
+      - name: Upload server coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: server-coverage
+          path: server/coverage

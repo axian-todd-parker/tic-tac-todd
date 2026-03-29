@@ -1,0 +1,30 @@
+{
+  "name": "ai-tic-tac-toe-lab-server",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "coverage": "vitest run --coverage",
+    "dev": "tsx watch src/index.ts",
+    "prepare:deploy": "rm -rf deploy && mkdir -p deploy && cp package.json package-lock.json deploy/ && cp -R dist deploy/dist",
+    "start": "node dist/server/src/index.js",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.914.0",
+    "@aws-sdk/lib-dynamodb": "^3.914.0",
+    "@fastify/cors": "^11.1.0",
+    "@fastify/websocket": "^11.2.0",
+    "fastify": "^5.6.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.12.0",
+    "@types/ws": "^8.18.1",
+    "@vitest/coverage-v8": "^4.1.2",
+    "tsx": "^4.20.6",
+    "typescript": "~5.9.3",
+    "vitest": "^4.0.8",
+    "ws": "^8.18.3"
+  }
+}

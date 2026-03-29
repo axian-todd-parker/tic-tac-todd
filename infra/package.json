@@ -1,0 +1,22 @@
+{
+  "name": "ai-tic-tac-toe-lab-infra",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "build": "tsc",
+    "synth": "cdk synth",
+    "bootstrap": "cdk bootstrap",
+    "deploy": "cdk deploy --require-approval never"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "^2.222.0",
+    "constructs": "^10.4.2",
+    "source-map-support": "^0.5.21"
+  },
+  "devDependencies": {
+    "@types/node": "^24.12.0",
+    "aws-cdk": "^2.1029.1",
+    "ts-node": "^10.9.2",
+    "typescript": "~5.9.3"
+  }
+}

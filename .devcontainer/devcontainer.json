@@ -1,0 +1,9 @@
+{
+  "name": "codex-devcontainer",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "postCreateCommand": "copy-codex-auth",
+  "mounts": [
+    "source=${localEnv:USERPROFILE}/.codex,target=/tmp/host-codex,type=bind,consistency=cached" ]
+}

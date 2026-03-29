@@ -1,0 +1,51 @@
+{
+  "name": "ai-tic-tac-toe-lab",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:client": "vite",
+    "dev:server": "npm --prefix server run dev",
+    "dev:multiplayer": "concurrently -k -n server,client \"npm:dev:server\" \"npm:dev:client -- --host 127.0.0.1 --port 4173\"",
+    "build": "npm run build:client && npm run build:server",
+    "build:client": "tsc -b && vite build",
+    "build:server": "npm --prefix server run build && npm --prefix server run prepare:deploy",
+    "coverage": "npm run coverage:unit && npm run coverage:server",
+    "coverage:unit": "vitest run --coverage",
+    "coverage:server": "npm --prefix server run coverage",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "test": "npm run test:unit && npm run test:server && npm run test:e2e",
+    "test:unit": "vitest run",
+    "test:unit:watch": "vitest",
+    "test:server": "npm --prefix server run test",
+    "test:e2e": "playwright test",
+    "test:e2e:install": "playwright install --with-deps chromium"
+  },
+  "dependencies": {
+    "canvas-confetti": "^1.9.3",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-router-dom": "^7.9.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.4",
+    "@playwright/test": "^1.56.1",
+    "@types/canvas-confetti": "^1.9.0",
+    "@types/node": "^24.12.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "@vitest/coverage-v8": "^4.1.2",
+    "concurrently": "^9.2.1",
+    "eslint": "^9.39.4",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.4.0",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.57.0",
+    "vite": "^8.0.1",
+    "vitest": "^4.0.8"
+  }
+}
